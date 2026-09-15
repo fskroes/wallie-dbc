@@ -27,7 +27,7 @@ An issuer toolkit that writes a tokenized-stock launch in IPO terms onto Meteora
 
 ## Links
 
-- Repo: (fill after push)
-- Live page: (fill after deploy)
+- Repo: https://github.com/fskroes/wallie-dbc
+- Live page: https://fskroes.github.io/wallie-dbc/ (also https://onewallie.com/dbc)
 - Launch record: `launch.surfnet.json`
 - AllowanceKit v0.6.0: https://www.npmjs.com/package/allowance-kit
