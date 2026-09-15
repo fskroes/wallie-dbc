@@ -1,0 +1,41 @@
+{
+  "network": "surfnet",
+  "rpcUrl": "https://402.surfnet.dev:8899",
+  "launchedAt": "2026-09-15T19:32:05.174Z",
+  "spec": {
+    "symbol": "ACMEx",
+    "name": "Acme Robotics tokenized common",
+    "totalShares": 1000000,
+    "openingPriceUsd": 8,
+    "listingPriceUsd": 12,
+    "floatPercent": 20,
+    "insiderLockPercent": 30,
+    "insiderCliffDays": 180,
+    "insiderVestMonths": 12,
+    "openingFeeBps": 300,
+    "restingFeeBps": 25,
+    "flipWindowHours": 24,
+    "creatorFeeSharePercent": 50
+  },
+  "summary": {
+    "initialMarketCapUsd": 8000000,
+    "migrationMarketCapUsd": 12000000,
+    "raiseTargetUsd": 2400000,
+    "curveSupply": 244949,
+    "floatSupply": 200000,
+    "lockedSupply": 300000,
+    "treasurySupply": 255051,
+    "averageCurvePriceUsd": 9.797958971132712
+  },
+  "partner": "BzUYbh8wsqgVRNdfFfALMWuRYBHzmzVYgVyQtGWfdyzm",
+  "creator": "Bakx1gqs2kxji9beXRAPBgDFpDHvX8x2nyn1mZxFL1up",
+  "quoteMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+  "config": "J12Jp1aFYrSi2qTZ2PMVRxsefQdQb8BcAPtDJ7ki3v6k",
+  "baseMint": "6zV4UiwJ8GsazStTjiYdMiZNkpxhQHNizxHfaWYMsVE4",
+  "pool": "F3nFkEPrWkNV1BNJUTgAPGVcCLXTXRDmwrWv8PAEftXD",
+  "tx": {
+    "createConfig": "34XGBVpkXXu4742W8JJAzKipkvGSM99uVAc73MFv1c9aCswcJv41X1dkqnbcHvbBkovd3uREdGdzx7Tb8TGHokVQ",
+    "createPoolWithFirstBuy": "3HgqHYLLJ6fNh1J1yGVceVWsryKCvnzfXrH7nTWBTPsvXD6eJRFbcnSQqUWHgKSw217zCF2s4Kdc6ZsL8Zdg5jgz"
+  },
+  "firstBuyUsd": 5000
+}

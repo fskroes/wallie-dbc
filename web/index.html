@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wallie DBC · What do I get back?</title>
+<meta name="description" content="Four figures a Meteora DBC launch never shows a buyer: exit value now, the fee to leave, the shortfall to graduation, and what unlocks after. Computed from on-chain state, paid for per report by a Wallie agent.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#fbfbfc; --panel:#fff; --panel2:#f4f4f8; --ink:#121318; --mut:#5f626d;
+  --line:#e9e9ee; --line2:#dcdce4; --acc:#127a4a; --acc-ink:#fff; --acc2:#5044e4;
+  --soft:#edf7f1; --lock:#6d3fd4; --lock-soft:#efe9fc; --ok:#2c8f56; --warn:#b7791f; --bad:#c62f28;
+  --code-bg:#f7f7fb; --shadow-sm:0 1px 2px rgba(18,19,24,.05),0 8px 24px rgba(18,19,24,.04);
+  --sans:'Instrument Sans',ui-sans-serif,system-ui,sans-serif; --serif:'Instrument Serif',Georgia,serif;
+  --mono:'Spline Sans Mono',ui-monospace,Menlo,monospace; --r:14px; --ease:cubic-bezier(.22,1,.36,1);
+}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+  --bg:#0d0e13; --panel:#15161d; --panel2:#1a1b24; --ink:#ecedf2; --mut:#8f92a0; --line:#23242d; --line2:#2e2f3a;
+  --acc:#3fca85; --acc-ink:#04180e; --acc2:#8b85ff; --soft:#12241a; --lock:#b79cff; --lock-soft:#241a3a;
+  --ok:#5fd68c; --warn:#d29922; --bad:#ff7b72; --code-bg:#0a0b10; --shadow-sm:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.3);
+}}
+:root[data-theme="dark"]{
+  --bg:#0d0e13; --panel:#15161d; --panel2:#1a1b24; --ink:#ecedf2; --mut:#8f92a0; --line:#23242d; --line2:#2e2f3a;
+  --acc:#3fca85; --acc-ink:#04180e; --acc2:#8b85ff; --soft:#12241a; --lock:#b79cff; --lock-soft:#241a3a;
+  --ok:#5fd68c; --warn:#d29922; --bad:#ff7b72; --code-bg:#0a0b10; --shadow-sm:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.3);
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:var(--acc2)}
+.wrap{max-width:1080px;margin:0 auto;padding:32px 16px 96px}
+header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:40px}
+.brand{font-weight:700;letter-spacing:-.01em;text-decoration:none;color:var(--ink)}
+.brand span{color:var(--acc)}
+.pill{font:500 12px/1 var(--mono);padding:6px 10px;border:1px solid var(--line2);border-radius:999px;color:var(--mut)}
+h1{font-family:var(--serif);font-weight:400;font-size:clamp(34px,5.4vw,58px);line-height:1.05;letter-spacing:-.02em;margin:0 0 14px}
+h1 em{font-style:italic;color:var(--acc)}
+.lede{font-size:18px;color:var(--mut);max-width:62ch;margin:0 0 28px}
+h2{font-family:var(--serif);font-weight:400;font-size:30px;letter-spacing:-.01em;margin:56px 0 8px}
+h2 + p{color:var(--mut);margin:0 0 20px;max-width:70ch}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow-sm);padding:20px}
+.grid{display:grid;gap:14px}
+.grid.four{grid-template-columns:repeat(4,1fr)}
+.grid.two{grid-template-columns:1fr 1fr}
+@media (max-width:820px){.grid.four{grid-template-columns:1fr 1fr}.grid.two{grid-template-columns:1fr}}
+@media (max-width:480px){.grid.four{grid-template-columns:1fr}}
+.stat .k{font:500 12px/1.2 var(--mono);color:var(--mut);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+.stat .v{font:500 30px/1.05 var(--mono);letter-spacing:-.02em;transition:color .3s var(--ease)}
+.stat .s{font-size:13px;color:var(--mut);margin-top:8px;min-height:1.4em}
+.stat.bad .v{color:var(--bad)} .stat.warn .v{color:var(--warn)} .stat.ok .v{color:var(--ok)} .stat.lock .v{color:var(--lock)}
+.scrub{margin-top:18px}
+.scrub label{display:flex;justify-content:space-between;font:500 13px var(--mono);color:var(--mut);margin-bottom:8px}
+input[type=range]{width:100%;accent-color:var(--acc)}
+.bar{height:10px;background:var(--panel2);border-radius:999px;overflow:hidden;border:1px solid var(--line)}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--acc),var(--acc2));width:0;transition:width .35s var(--ease)}
+.chart{width:100%;height:220px;display:block}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font:500 12px var(--mono);color:var(--mut);margin-top:8px}
+.legend b{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+.timeline{display:grid;gap:12px}
+.poll{display:grid;grid-template-columns:110px 1fr;gap:14px;align-items:start}
+@media (max-width:640px){.poll{grid-template-columns:1fr}}
+.money{font:500 13px/1.6 var(--mono);color:var(--mut)}
+.money b{color:var(--ink);font-weight:500}
+.money .esc{color:var(--lock)} .money .chg{color:var(--acc)} .money .ref{color:var(--ok)}
+.rep{font:400 13px/1.55 var(--mono);white-space:pre-wrap;background:var(--code-bg);border:1px solid var(--line);border-radius:10px;padding:12px 14px;overflow:auto}
+.alert{display:inline-block;font:500 12px var(--mono);padding:4px 9px;border-radius:999px;margin:8px 6px 0 0;border:1px solid}
+.alert.warn{color:var(--warn);border-color:var(--warn)} .alert.bad{color:var(--bad);border-color:var(--bad)} .alert.lock{color:var(--lock);border-color:var(--lock)} .alert.ok{color:var(--ok);border-color:var(--ok)}
+.trade{font:500 13px var(--mono);color:var(--mut);padding:4px 0 4px 124px}
+@media (max-width:640px){.trade{padding-left:0}}
+.trade b{color:var(--acc2);font-weight:500}
+table{width:100%;border-collapse:collapse;font-size:15px}
+td,th{padding:10px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font:500 12px/1.2 var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--mut)}
+td code,.mono{font-family:var(--mono);font-size:13px}
+.small{font-size:13px;color:var(--mut)}
+.addr{font:400 12px var(--mono);color:var(--mut);word-break:break-all}
+.theme-toggle{background:none;border:1px solid var(--line2);border-radius:999px;padding:6px 10px;color:var(--mut);cursor:pointer;font:500 12px var(--mono)}
+.foot{margin-top:64px;padding-top:20px;border-top:1px solid var(--line);color:var(--mut);font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <a class="brand" href="https://onewallie.com">one<span>wallie</span> · DBC</a>
+  <div style="display:flex;gap:8px;align-items:center">
+    <span class="pill">Stocklana · Meteora DBC</span>
+    <button class="theme-toggle" id="theme">theme</button>
+  </div>
+</header>
+
+<h1>If I buy into this launch now and it never graduates, <em>what do I get back?</em></h1>
+<p class="lede">A tokenized-stock launch on Meteora DBC is priced on the way in. Nobody prints the way out. These four figures come straight from the pool's on-chain state, and a Wallie agent pays a cent a piece to keep them fresh, within an allowance it cannot exceed.</p>
+
+<div class="card" id="you">
+  <div class="grid four">
+    <div class="stat" id="s-exit"><div class="k">exit value now</div><div class="v">—</div><div class="s"></div></div>
+    <div class="stat" id="s-fee"><div class="k">fee to leave</div><div class="v">—</div><div class="s"></div></div>
+    <div class="stat" id="s-short"><div class="k">shortfall to graduation</div><div class="v">—</div><div class="s"></div></div>
+    <div class="stat lock" id="s-lock"><div class="k">unlocks after graduation</div><div class="v">—</div><div class="s"></div></div>
+  </div>
+  <div class="scrub">
+    <label><span id="l-left">you bought 10,000 USDC at minute one</span><span id="l-right">0 h</span></label>
+    <input type="range" id="range" min="0" max="40" value="0" step="1">
+    <div class="bar" style="margin-top:10px"><i id="bar"></i></div>
+    <label style="margin-top:8px"><span id="l-raised"></span><span id="l-phase"></span></label>
+  </div>
+</div>
+
+<h2>The curve, and where you stand on it</h2>
+<p>Drag the slider above. The book fills over two days. Your exit value climbs with the raise, the flip-window fee decays, and the moment the raise is met the curve closes and your position waits for the DAMM v2 listing.</p>
+<div class="card">
+  <svg class="chart" id="chart" viewBox="0 0 1000 220" preserveAspectRatio="none" aria-label="exit value and raise progress over time"></svg>
+  <div class="legend"><span><b style="background:var(--acc)"></b>exit value now (USDC)</span><span><b style="background:var(--acc2)"></b>raise progress</span><span><b style="background:var(--warn)"></b>sell fee (bps)</span><span><b style="background:var(--mut)"></b>what you paid</span></div>
+</div>
+
+<h2>How the launch was written</h2>
+<p>An issuer describes the deal in stock terms. The toolkit turns it into the exact DBC config the program accepts. Nothing here is a memecoin knob.</p>
+<div class="card"><table id="terms"><thead><tr><th>IPO term</th><th>value</th><th>DBC field</th></tr></thead><tbody></tbody></table></div>
+
+<h2>Live: the agent watching the real pool</h2>
+<p id="live-lede">A Wallie agent with a $0.50 allowance polled a real DBC pool launched from this config on a mainnet fork, while another wallet bought in between polls. Every poll opened a $0.10 x402 channel, was charged $0.01, and got $0.09 back.</p>
+<div class="card">
+  <div class="small mono" id="live-head"></div>
+  <div class="timeline" id="timeline" style="margin-top:14px"></div>
+  <div class="money" id="live-total" style="margin-top:16px"></div>
+</div>
+
+<h2>Why this is the same idea told twice</h2>
+<p>An IPO has a rule a memecoin does not: if the book does not fill, the money comes back. Wallie's payment channel has the same rule: reserve a ceiling, settle only what was used, refund the rest. The report tells a holder their downside before they commit. The channel gives the agent its downside before it pays. One promise, two costumes.</p>
+
+<div class="foot">
+  <div id="foot-links"></div>
+  <div style="margin-top:8px">Nothing on this page is investment advice. A DBC-launched mint has no equity backing by itself; a real issuer must stand behind it. The demo launch is a fork, not a listing.</div>
+</div>
+</div>
+
+<script>
+(async () => {
+  const $ = (s) => document.querySelector(s);
+  const usd = (n, d = 0) => n.toLocaleString("en-US", { maximumFractionDigits: d }) + " USDC";
+  const pct = (n) => (n * 100).toFixed(1) + "%";
+  const micro = (s) => "$" + (Number(s) / 1e6).toFixed(2);
+
+  // theme
+  const root = document.documentElement;
+  try { const t = localStorage.getItem("theme"); if (t) root.dataset.theme = t; } catch {}
+  $("#theme").onclick = () => { const next = (root.dataset.theme || (matchMedia("(prefers-color-scheme:dark)").matches ? "dark" : "light")) === "dark" ? "light" : "dark"; root.dataset.theme = next; try { localStorage.setItem("theme", next); } catch {} };
+
+  const sim = await fetch("sim.json").then((r) => r.json());
+  const F = sim.frames;
+  const sym = sim.spec.symbol;
+  const range = $("#range"); range.max = F.length - 1;
+
+  function show(i) {
+    const f = F[i];
+    const set = (id, v, s, cls) => { const el = $(id); el.querySelector(".v").textContent = v; el.querySelector(".s").textContent = s; el.className = "stat " + (cls || "") + (id === "#s-lock" ? " lock" : ""); };
+    if (f.exitNote) set("#s-exit", f.phase === "complete" ? "closed" : "—", f.exitNote, "warn");
+    else set("#s-exit", usd(f.exitValueNowQuote), `of ${usd(sim.you.paidUsd)} paid · ${pct(f.exitHaircut)} of mark`, f.exitValueNowQuote < sim.you.paidUsd ? "bad" : "ok");
+    set("#s-fee", f.exitNote ? "—" : usd(f.exitFeeNowQuote), `${f.sellFeeBpsNow} bps now, rests at ${f.restingFeeBps} bps`, f.sellFeeBpsNow > 200 ? "warn" : "");
+    set("#s-short", usd(f.shortfallQuote), f.shortfallQuote > 0 ? `${f.buysToGraduate} buys of 10,000 USDC still needed` : "raise met; waiting for migration", f.shortfallQuote > 0 ? "" : "ok");
+    set("#s-lock", f.lockedTokens.toLocaleString("en-US") + " " + sym, `${pct(f.lockedShareOfCirculating)} of post-graduation supply, ${sim.spec.insiderCliffDays}-day cliff`);
+    $("#l-right").textContent = f.hours.toFixed(1) + " h after open";
+    $("#bar").style.width = pct(f.progress);
+    $("#l-raised").textContent = `raised ${usd(f.raisedQuote)} of ${usd(f.raiseTargetQuote)} (${pct(f.progress)})`;
+    $("#l-phase").textContent = `price ${f.priceNow.toFixed(2)} → ${f.priceAtGraduation.toFixed(2)} · ${f.phase}`;
+    drawCursor(i);
+  }
+  range.oninput = () => show(+range.value);
+
+  // chart
+  const svg = $("#chart"); const W = 1000, H = 220, P = 8;
+  const maxExit = Math.max(...F.map((f) => f.exitValueNowQuote), sim.you.paidUsd) * 1.08;
+  const maxH = F[F.length - 1].hours;
+  const x = (f) => P + (f.hours / maxH) * (W - 2 * P);
+  const y = (v, max) => H - P - (v / max) * (H - 2 * P);
+  const path = (get, max) => F.map((f, i) => (i ? "L" : "M") + x(f).toFixed(1) + " " + y(get(f), max).toFixed(1)).join(" ");
+  const exitPath = F.map((f, i) => (f.exitNote ? "" : (i && !F[i - 1].exitNote ? "L" : "M") + x(f).toFixed(1) + " " + y(f.exitValueNowQuote, maxExit).toFixed(1))).join(" ");
+  svg.innerHTML = `
+    <line x1="${P}" x2="${W - P}" y1="${y(sim.you.paidUsd, maxExit)}" y2="${y(sim.you.paidUsd, maxExit)}" stroke="var(--mut)" stroke-dasharray="4 6" stroke-width="1.5"/>
+    <path d="${path((f) => f.progress, 1)}" fill="none" stroke="var(--acc2)" stroke-width="2" opacity=".8"/>
+    <path d="${path((f) => f.sellFeeBpsNow, 300)}" fill="none" stroke="var(--warn)" stroke-width="2" opacity=".8"/>
+    <path d="${exitPath}" fill="none" stroke="var(--acc)" stroke-width="3"/>
+    <line id="cursor" x1="0" x2="0" y1="${P}" y2="${H - P}" stroke="var(--ink)" stroke-width="1.5" opacity=".6"/>
+    <circle id="dot" r="5" fill="var(--acc)"/>`;
+  function drawCursor(i) {
+    const f = F[i]; const cx = x(f).toFixed(1);
+    const c = svg.querySelector("#cursor"); c.setAttribute("x1", cx); c.setAttribute("x2", cx);
+    const d = svg.querySelector("#dot"); d.setAttribute("cx", cx); d.setAttribute("cy", y(f.exitNote ? 0 : f.exitValueNowQuote, maxExit).toFixed(1)); d.style.opacity = f.exitNote ? 0 : 1;
+  }
+  svg.addEventListener("pointermove", (e) => { const r = svg.getBoundingClientRect(); const h = ((e.clientX - r.left) / r.width) * maxH; let best = 0; for (let i = 0; i < F.length; i++) if (Math.abs(F[i].hours - h) < Math.abs(F[best].hours - h)) best = i; range.value = best; show(best); });
+
+  // terms table
+  const s = sim.spec, sum = sim.summary;
+  const rows = [
+    ["opening price", `${s.openingPriceUsd} USDC`, "initialMarketCap → sqrtStartPrice"],
+    ["listing price", `${s.listingPriceUsd} USDC`, "migrationMarketCap → migrationSqrtPrice"],
+    ["float", `${s.floatPercent}% = ${sum.floatSupply.toLocaleString("en-US")} ${sym}`, "percentageSupplyOnMigration → migrationBaseThreshold"],
+    ["book (raise target)", usd(sum.raiseTargetUsd), "migrationQuoteThreshold (float × listing)"],
+    ["curve shares", `${sum.curveSupply.toLocaleString("en-US")} ${sym} at avg ${sum.averageCurvePriceUsd.toFixed(2)}`, "swapBaseAmount, two-segment curve"],
+    ["treasury (unissued)", `${sum.treasurySupply.toLocaleString("en-US")} ${sym}`, "leftover → leftoverReceiver"],
+    ["flipping penalty", `${s.openingFeeBps} → ${s.restingFeeBps} bps over ${s.flipWindowHours} h`, "baseFee: FeeSchedulerLinear"],
+    ["insider lockup", `${s.insiderLockPercent}% · ${s.insiderCliffDays}-day cliff · ${s.insiderVestMonths} mo vest`, "lockedVesting (cliff from migration)"],
+    ["listing venue", "DAMM v2, 50/50 permanently locked LP", "migrationOption = MET_DAMM_V2"],
+    ["settlement", "USDC", "quoteMint"],
+  ];
+  $("#terms tbody").innerHTML = rows.map(([a, b, c]) => `<tr><td>${a}</td><td>${b}</td><td><code>${c}</code></td></tr>`).join("");
+
+  show(0);
+
+  // live demo timeline
+  try {
+    const live = await fetch("data.json").then((r) => r.json());
+    const L = live.launch;
+    $("#live-head").innerHTML = `pool <span class="addr">${L.pool}</span><br>config <span class="addr">${L.config}</span><br>network ${L.network} (mainnet fork, real DBC program) · holder <span class="addr">${live.holder}</span>`;
+    const cls = (rule) => ({ "exit-haircut": "bad", stalled: "warn", "fee-spike": "warn", "lock-heavy": "lock", complete: "ok", migrated: "ok" })[rule] || "warn";
+    const tradesAfter = Object.fromEntries(live.trades.map((t) => [t.afterPoll, t]));
+    $("#timeline").innerHTML = live.polls.map((p) => {
+      const r = p.report;
+      const rep = r ? [
+        `phase          ${r.phase}`,
+        `price now      ${r.priceNow.toFixed(4)} USDC/${sym}  (graduates at ${r.priceAtGraduation.toFixed(4)})`,
+        `raised         ${usd(r.raisedQuote)} of ${usd(r.raiseTargetQuote)}  (${pct(r.progress)})`,
+        `shortfall      ${usd(r.shortfallQuote)}  = ${r.buysToGraduate} buys of 10,000`,
+        `position       ${r.holderTokens.toLocaleString("en-US", { maximumFractionDigits: 3 })} ${sym}  marked ${usd(r.holderMarkQuote, 2)}`,
+        `exit value now ${r.exitNote ? r.exitNote : `${usd(r.exitValueNowQuote, 2)}  after ${usd(r.exitFeeNowQuote, 2)} fee  (${pct(r.exitHaircut)} of mark)`}`,
+        `sell fee now   ${r.sellFeeBpsNow} bps  (rests at ${r.restingFeeBps})`,
+        `locked supply  ${r.lockedTokens.toLocaleString("en-US")} ${sym}  = ${pct(r.lockedShareOfCirculating)} of post-graduation supply`,
+      ].join("\n") : (p.ok ? "no report" : "blocked by policy");
+      const t = tradesAfter[p.n];
+      return `<div class="poll"><div class="money"><b>poll ${p.n}</b><br><span class="esc">escrow ${micro(p.quotedMicro)}</span><br><span class="chg">charged ${micro(p.costMicro)}</span><br><span class="ref">refund ${micro(p.refundMicro)}</span></div><div><div class="rep">${rep}</div>${p.alerts.map((a) => `<span class="alert ${cls(a.rule)}">${a.rule}: ${a.detail}</span>`).join("")}</div></div>` +
+        (t ? `<div class="trade">→ another wallet buys <b>${t.usd.toLocaleString("en-US")} USDC</b> on the pool · <span class="addr">${t.sig.slice(0, 32)}…</span></div>` : "");
+    }).join("");
+    $("#live-total").innerHTML = `${live.polls.length} reports · spent <b>${micro(live.spentMicro)}</b> of the $0.50 allowance · every unused cent of every ${micro(live.ceilingMicro)} escrow came back${live.stoppedBy ? ` · stopped by ${live.stoppedBy}` : ""}`;
+    $("#foot-links").innerHTML = `Launched ${new Date(L.launchedAt).toUTCString()} · createConfig <span class="addr">${L.tx.createConfig}</span> · createPoolWithFirstBuy <span class="addr">${L.tx.createPoolWithFirstBuy}</span>`;
+  } catch (e) {
+    $("#live-lede").textContent = "Live demo data not built yet. Run: node demo/run.ts --out web/data.json";
+  }
+})();
+</script>
+</body>
+</html>

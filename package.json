@@ -1,0 +1,34 @@
+{
+  "name": "wallie-dbc",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Downside-first tokenized-stock launches on Meteora DBC, monitored and paid for by a Wallie agent.",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node --test \"test/*.test.ts\"",
+    "report": "node src/cli.ts report",
+    "scan": "node src/cli.ts scan"
+  },
+  "dependencies": {
+    "@coral-xyz/anchor": "^0.31.1",
+    "@meteora-ag/dynamic-bonding-curve-sdk": "^1.5.12",
+    "@solana-program/token": "^0.9.0",
+    "@solana/kit": "^5.5.1",
+    "@solana/web3.js": "^1.99.0",
+    "@x402/svm": "^2.25.0",
+    "allowance-kit": "^0.6.0",
+    "bn.js": "^5.2.5",
+    "decimal.js": "^10.6.0"
+  },
+  "devDependencies": {
+    "@types/bn.js": "^5.2.0",
+    "@types/node": "^26.6.0",
+    "typescript": "^5.9.3"
+  }
+}
