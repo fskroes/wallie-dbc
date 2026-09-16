@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-15T19:37:26.460Z",
+  "generatedAt": "2026-09-16T08:35:13.859Z",
   "launch": {
     "network": "surfnet",
     "rpcUrl": "https://402.surfnet.dev:8899",
@@ -42,7 +42,7 @@
     "firstBuyUsd": 5000
   },
   "holder": "Bakx1gqs2kxji9beXRAPBgDFpDHvX8x2nyn1mZxFL1up",
-  "trader": "FLAKn5wvPxdeueLEYsrX6ZSHEMiGmqtks6uGJGwpmbff",
+  "trader": "7Kn6DwdgH3yhdSiiKE2rukuPzGCnjDKLoJLtCCitY49j",
   "perReportMicro": "10000",
   "ceilingMicro": "100000",
   "polls": [
@@ -52,139 +52,7 @@
       "quotedMicro": "100000",
       "costMicro": "10000",
       "refundMicro": "90000",
-      "channelId": "8g7D1byzfYuBJBSguCpyq2ErnCowG4i38uVffy9jZUc6",
-      "report": {
-        "phase": "trading",
-        "priceNow": 8.007268385483076,
-        "priceAtGraduation": 11.999999999999067,
-        "raisedQuote": 4850,
-        "raiseTargetQuote": 2400000,
-        "progress": 0.0020208333333333332,
-        "shortfallQuote": 2395150,
-        "buysToGraduate": 247,
-        "holderTokens": 605.974783,
-        "holderMarkQuote": 4852.2027223158675,
-        "exitValueNowQuote": 4704.499993,
-        "exitFeeNowQuote": 145.5,
-        "exitHaircut": 0.9695596540852334,
-        "sellFeeBpsNow": 300,
-        "restingFeeBps": 25,
-        "lockedTokens": 300000,
-        "lockedShareOfCirculating": 0.5992737106614365,
-        "floatTokens": 199999.999853,
-        "soldTokens": 605.974784,
-        "activationPoint": 1789494342,
-        "notYetOpen": false
-      },
-      "alerts": [
-        {
-          "rule": "fee-spike",
-          "detail": "sell fee is 300 bps, above 200 bps",
-          "at": "2026-09-15T19:37:17.173Z"
-        },
-        {
-          "rule": "lock-heavy",
-          "detail": "59.9% of post-graduation supply is locked, above 50.0%",
-          "at": "2026-09-15T19:37:17.173Z"
-        }
-      ],
-      "spentMicro": "10000"
-    },
-    {
-      "n": 2,
-      "ok": true,
-      "quotedMicro": "100000",
-      "costMicro": "10000",
-      "refundMicro": "90000",
-      "channelId": "Gna2Zb3od61XxrhVQGBq1MADssHvh2CVgQTYWm7xuhEq",
-      "report": {
-        "phase": "trading",
-        "priceNow": 8.043659818000432,
-        "priceAtGraduation": 11.999999999999067,
-        "raisedQuote": 29100,
-        "raiseTargetQuote": 2400000,
-        "progress": 0.012125,
-        "shortfallQuote": 2370900,
-        "buysToGraduate": 245,
-        "holderTokens": 605.974783,
-        "holderMarkQuote": 4874.255012738631,
-        "exitValueNowQuote": 4725.876134,
-        "exitFeeNowQuote": 146.161118,
-        "exitHaircut": 0.9695586549429913,
-        "sellFeeBpsNow": 300,
-        "restingFeeBps": 25,
-        "lockedTokens": 300000,
-        "lockedShareOfCirculating": 0.5956782181054197,
-        "floatTokens": 199999.999853,
-        "soldTokens": 3627.614657,
-        "activationPoint": 1789494342,
-        "notYetOpen": false
-      },
-      "alerts": [
-        {
-          "rule": "fee-spike",
-          "detail": "sell fee is 300 bps, above 200 bps",
-          "at": "2026-09-15T19:37:20.508Z"
-        },
-        {
-          "rule": "lock-heavy",
-          "detail": "59.6% of post-graduation supply is locked, above 50.0%",
-          "at": "2026-09-15T19:37:20.508Z"
-        }
-      ],
-      "spentMicro": "20000"
-    },
-    {
-      "n": 3,
-      "ok": true,
-      "quotedMicro": "100000",
-      "costMicro": "10000",
-      "refundMicro": "90000",
-      "channelId": "qCZRQVJRwdaARzPQfUnjbNt6XpUHTL7GBTYE16EWxK3",
-      "report": {
-        "phase": "trading",
-        "priceNow": 8.263741091673786,
-        "priceAtGraduation": 11.999999999999067,
-        "raisedQuote": 174600,
-        "raiseTargetQuote": 2400000,
-        "progress": 0.07275,
-        "shortfallQuote": 2225400,
-        "buysToGraduate": 230,
-        "holderTokens": 605.974783,
-        "holderMarkQuote": 5007.618714795206,
-        "exitValueNowQuote": 4855.150049,
-        "exitFeeNowQuote": 150.15928,
-        "exitHaircut": 0.9695526607597477,
-        "sellFeeBpsNow": 300,
-        "restingFeeBps": 25,
-        "lockedTokens": 300000,
-        "lockedShareOfCirculating": 0.575292456592215,
-        "floatTokens": 199999.999853,
-        "soldTokens": 21473.898444,
-        "activationPoint": 1789494342,
-        "notYetOpen": false
-      },
-      "alerts": [
-        {
-          "rule": "fee-spike",
-          "detail": "sell fee is 300 bps, above 200 bps",
-          "at": "2026-09-15T19:37:23.408Z"
-        },
-        {
-          "rule": "lock-heavy",
-          "detail": "57.5% of post-graduation supply is locked, above 50.0%",
-          "at": "2026-09-15T19:37:23.408Z"
-        }
-      ],
-      "spentMicro": "30000"
-    },
-    {
-      "n": 4,
-      "ok": true,
-      "quotedMicro": "100000",
-      "costMicro": "10000",
-      "refundMicro": "90000",
-      "channelId": "8PMsXXukQUVm869tFF6u2uf8uano4KFByqhGSRwVgb8J",
+      "channelId": "BFzd18LiRD3MoYHVTaZAbDNdAdBPgJRsnsdq9n57ZwJ",
       "report": {
         "phase": "trading",
         "priceNow": 8.865146017226602,
@@ -193,13 +61,13 @@
         "raiseTargetQuote": 2400000,
         "progress": 0.23441666666666666,
         "shortfallQuote": 1837400,
-        "buysToGraduate": 190,
+        "buysToGraduate": 187,
         "holderTokens": 605.974783,
         "holderMarkQuote": 5372.054934052204,
-        "exitValueNowQuote": 5208.404279,
-        "exitFeeNowQuote": 161.084669,
-        "exitHaircut": 0.9695366750598807,
-        "sellFeeBpsNow": 300,
+        "exitValueNowQuote": 5287.156726,
+        "exitFeeNowQuote": 82.332222,
+        "exitHaircut": 0.9841963254109608,
+        "sellFeeBpsNow": 153,
         "restingFeeBps": 25,
         "lockedTokens": 300000,
         "lockedShareOfCirculating": 0.5292821525362799,
@@ -210,16 +78,122 @@
       },
       "alerts": [
         {
-          "rule": "fee-spike",
-          "detail": "sell fee is 300 bps, above 200 bps",
-          "at": "2026-09-15T19:37:26.434Z"
-        },
-        {
           "rule": "lock-heavy",
           "detail": "52.9% of post-graduation supply is locked, above 50.0%",
-          "at": "2026-09-15T19:37:26.434Z"
+          "at": "2026-09-16T08:35:02.517Z"
         }
       ],
+      "spentMicro": "10000"
+    },
+    {
+      "n": 2,
+      "ok": true,
+      "quotedMicro": "100000",
+      "costMicro": "10000",
+      "refundMicro": "90000",
+      "channelId": "94eBwhe3fEGmAjhCp2rzNcYxuTNkKDpp9PKCmf6E6MFP",
+      "report": {
+        "phase": "trading",
+        "priceNow": 8.904014828494915,
+        "priceAtGraduation": 11.999999999999067,
+        "raisedQuote": 587216.6664,
+        "raiseTargetQuote": 2400000,
+        "progress": 0.24467361099999999,
+        "shortfallQuote": 1812783.3336,
+        "buysToGraduate": 185,
+        "holderTokens": 605.974783,
+        "holderMarkQuote": 5395.608453525989,
+        "exitValueNowQuote": 5310.332459,
+        "exitFeeNowQuote": 82.693117,
+        "exitHaircut": 0.9841952959966431,
+        "sellFeeBpsNow": 153,
+        "restingFeeBps": 25,
+        "lockedTokens": 300000,
+        "lockedShareOfCirculating": 0.5267074396654146,
+        "floatTokens": 199999.999853,
+        "soldTokens": 69576.158385,
+        "activationPoint": 1789494342,
+        "notYetOpen": false
+      },
+      "alerts": [
+        {
+          "rule": "lock-heavy",
+          "detail": "52.7% of post-graduation supply is locked, above 50.0%",
+          "at": "2026-09-16T08:35:07.639Z"
+        }
+      ],
+      "spentMicro": "20000"
+    },
+    {
+      "n": 3,
+      "ok": true,
+      "quotedMicro": "100000",
+      "costMicro": "10000",
+      "refundMicro": "90000",
+      "channelId": "9Pvc8McL4eveMGQETXYoe5atwMtfeVdUB6jeHrhhMF8G",
+      "report": {
+        "phase": "trading",
+        "priceNow": 9.139013177845028,
+        "priceAtGraduation": 11.999999999999067,
+        "raisedQuote": 734916.6648,
+        "raiseTargetQuote": 2400000,
+        "progress": 0.306215277,
+        "shortfallQuote": 1665083.3352,
+        "buysToGraduate": 170,
+        "holderTokens": 605.974783,
+        "holderMarkQuote": 5538.011527278782,
+        "exitValueNowQuote": 5450.450688,
+        "exitFeeNowQuote": 84.875054,
+        "exitHaircut": 0.9841891193531324,
+        "sellFeeBpsNow": 153,
+        "restingFeeBps": 25,
+        "lockedTokens": 300000,
+        "lockedShareOfCirculating": 0.5119894955269756,
+        "floatTokens": 199999.999853,
+        "soldTokens": 85949.521809,
+        "activationPoint": 1789494342,
+        "notYetOpen": false
+      },
+      "alerts": [
+        {
+          "rule": "lock-heavy",
+          "detail": "51.2% of post-graduation supply is locked, above 50.0%",
+          "at": "2026-09-16T08:35:10.736Z"
+        }
+      ],
+      "spentMicro": "30000"
+    },
+    {
+      "n": 4,
+      "ok": true,
+      "quotedMicro": "100000",
+      "costMicro": "10000",
+      "refundMicro": "90000",
+      "channelId": "B7vMXuVqLE8WQRhF3jrn3imFubHZfq7gKtTEpuffx7wA",
+      "report": {
+        "phase": "trading",
+        "priceNow": 9.780639480220652,
+        "priceAtGraduation": 11.999999999999067,
+        "raisedQuote": 1128783.3272,
+        "raiseTargetQuote": 2400000,
+        "progress": 0.4703263863333333,
+        "shortfallQuote": 1271216.6728,
+        "buysToGraduate": 130,
+        "holderTokens": 605.974783,
+        "holderMarkQuote": 5926.820886627942,
+        "exitValueNowQuote": 5833.01501,
+        "exitFeeNowQuote": 90.83239,
+        "exitHaircut": 0.9841726486387354,
+        "sellFeeBpsNow": 153,
+        "restingFeeBps": 25,
+        "lockedTokens": 300000,
+        "lockedShareOfCirculating": 0.4780044627656441,
+        "floatTokens": 199999.999853,
+        "soldTokens": 127609.203342,
+        "activationPoint": 1789494342,
+        "notYetOpen": false
+      },
+      "alerts": [],
       "spentMicro": "40000"
     }
   ],
@@ -227,17 +201,17 @@
     {
       "afterPoll": 1,
       "usd": 25000,
-      "sig": "4AZq4zpDpjDEmt5McMBSsG6Q72B5oBn4NK2C6iuc2owQUAA3PHFvbckpCK4EMGuFVD4GGTX8Kzf3EN2ojRESs8Vw"
+      "sig": "3ADxgaQwsbU4gXoig57MR3WpFJZ8cZqpS33ahYMsqFST1MawQ71UPUgPvRVTZY3MHN43iRysDSWzcWtcoU5marTQ"
     },
     {
       "afterPoll": 2,
       "usd": 150000,
-      "sig": "4Hhc7jqoDM6BpCbMgyiRMifZV8sp61EZ5khGwwHK9YF2SJmT4TekdrRg2rdGQBaJTdz61gHeqhX84NC9otsRJfGZ"
+      "sig": "3BsWKuB4kWd8HSMtqfbEigstkLkmdBNzDDWDAMdhe3dRCXgnCUCwNXWjMRQ4MaHDamxFt5nVvShL726K1BsRWHJd"
     },
     {
       "afterPoll": 3,
       "usd": 400000,
-      "sig": "3PqZybGdeZQaqTNVQ7jqc2F33msqkRazta3Hwh8P5AJPwJ2p1ffs3BJkRSNnkjQE7LxU8XeugP55SEzfrjpTuKf"
+      "sig": "xvyznWd1EAKevXwzKFCXfBJKdeqL5BYX2hjgPBveCBxpewrjWuLY1tyexD5D2ADutzdjQyg68fDXpURXsWzWYXm"
     }
   ],
   "spentMicro": "40000"
