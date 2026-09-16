@@ -19,7 +19,7 @@ Built for the Stocklana hackathon, Meteora DBC bounty. Companion to [AllowanceKi
 | Launch script | `scripts/launch.ts` | `createConfig` as partner, `createPoolWithFirstBuy` as creator. Writes `launch.<network>.json`. |
 | Trade helper | `scripts/trade.ts` | Buy or sell on a launched pool. Used by the demo to move the market between polls. |
 | Demo | `demo/run.ts` | Agent watches the real surfnet pool while another wallet buys. Prints the money trail and writes `web/data.json`. |
-| Web page | `web/index.html` | Scrub through a simulated launch; see the live timeline. Static, no build step. |
+| Web page | `web/index.html` | Scrub through a simulated launch; see the live timeline. Static, no build step. Published at https://www.onewallie.com/dbc.html on the Wallie site (data pinned from this repo by `onewallie-site/scripts/sync-dbc.mjs`); GitHub Pages serves the same page as a mirror. |
 
 ## The mapping
 
