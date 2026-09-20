@@ -126,6 +126,15 @@ td code,.mono{font-family:var(--mono);font-size:13px}
   <div class="money" id="live-total" style="margin-top:16px"></div>
 </div>
 
+<h2>Working on mainnet today</h2>
+<p>The reader is not fork-only. From a fresh clone on 2026-09-20 it priced two live pools of the real DBC program on Solana mainnet-beta, read-only, no key, no funds. <a href="https://solscan.io/account/JEK34huFirCquM1UryNcE8DBdBEX1BGa9LtdZu1NhT5s">pool JEK34hu…</a> is trading (0.096 of 85 SOL raised, sell fee 400 bps); <a href="https://solscan.io/account/JEKDS3mbrwcrqHzUtKmeC7G4b3sx6khdkfZUvxhdgMFx">pool JEKDS3m…</a> has migrated (200 of 200 SOL). Full output: <a href="https://github.com/fskroes/wallie-dbc/blob/main/docs/mainnet-report-2026-09-20.json">docs/mainnet-report-2026-09-20.json</a>.</p>
+<div class="card"><pre class="small mono" style="margin:0;white-space:pre-wrap">$ node dist/src/cli.js report JEK34huFirCquM1UryNcE8DBdBEX1BGa9LtdZu1NhT5s --network solana
+phase              trading
+price now          2.116e-8 SOL/TOKEN  (graduates at 5.000e-7)
+raised             0.096 SOL of 85 SOL  (0.1%)
+shortfall          84.9 SOL  = 1 reference buys
+sell fee now       400 bps  (rests at 400 bps)</pre></div>
+
 <h2>Why this is the same idea told twice</h2>
 <p>An IPO has a rule a memecoin does not: if the book does not fill, the money comes back. Wallie's payment channel has the same rule: reserve a ceiling, settle only what was used, refund the rest. The report tells a holder their downside before they commit. The channel gives the agent its downside before it pays. One promise, two costumes.</p>
 

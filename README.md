@@ -4,7 +4,7 @@
 
 A Meteora DBC launch is priced on the way in. Nobody prints the way out. This repo answers the exit question for tokenized-stock launches, from on-chain state, and has a Wallie agent pay for the answer per report inside an allowance it cannot exceed.
 
-Built for the Stocklana hackathon, Meteora DBC bounty. Companion to [AllowanceKit / Wallie](https://github.com/fskroes/wallet_pay) (npm `allowance-kit`), which supplies the x402 `upto` payment channel. This repo holds all DBC-specific code; AllowanceKit stays zero-dependency.
+Built for the Stocklana hackathon, Meteora DBC bounty. Companion to [AllowanceKit / Wallie](https://github.com/fskroes/AllowanceKit) (npm `allowance-kit`), which supplies the x402 `upto` payment channel. This repo holds all DBC-specific code; AllowanceKit stays zero-dependency.
 
 ## What it does
 
@@ -43,7 +43,7 @@ The identity DBC enforces: USDC collected on the curve becomes the graduation po
 ```sh
 npm install --force
 npm run build
-npm test                                 # 21 tests, all offline
+npm test                                 # 25 tests, all offline
 
 node dist/src/cli.js spec                # the DBC config for the default ACMEx spec
 node dist/src/cli.js simulate            # replay five trades, report after each
@@ -69,6 +69,41 @@ Launch on surfnet (mainnet fork, real program `dbcij3LWUppWqq96dh6gJWwBifmcGfLSB
 The offline simulator and the live reader agree to the cent on the same first buy: 5,000 USDC in, 605.975 ACMEx out, exit value 4,704.5 USDC after a 145.5 USDC fee.
 
 Four agent polls, three trades between them, raise moved from 0.2% to 23.4%. Spent $0.04 of a $0.50 allowance. Every poll: $0.10 escrowed, $0.01 charged, $0.09 refunded.
+
+## Working on mainnet today
+
+The reader is not fork-only. It reads any live pool of the real DBC program on Solana mainnet-beta, read-only, no key, no funds. Run from a fresh clone on 2026-09-20 against the public RPC:
+
+```sh
+node dist/src/cli.js report JEK34huFirCquM1UryNcE8DBdBEX1BGa9LtdZu1NhT5s --network solana
+```
+
+```
+pool JEK34huFirCquM1UryNcE8DBdBEX1BGa9LtdZu1NhT5s
+base 551YFrffnUEdwHcxjfK8PpWzriNRx8q1NuFdfN7zBAGS
+quote So11111111111111111111111111111111111111112
+
+phase              trading
+price now          2.116e-8 SOL/TOKEN  (graduates at 5.000e-7)
+raised             0.096 SOL of 85 SOL  (0.1%)
+shortfall          84.9 SOL  = 1 reference buys
+position           0 TOKEN  marked 0 SOL
+exit value now     no position
+sell fee now       400 bps  (rests at 400 bps)
+locked supply      0 TOKEN  = 0.0% of post-graduation supply
+```
+
+Same command on a pool that already graduated, `JEKDS3mbrwcrqHzUtKmeC7G4b3sx6khdkfZUvxhdgMFx`: phase `migrated`, 200 SOL of 200 SOL raised, shortfall 0, sell fee 25 bps. Both pools were picked at random with `sample --network solana`; neither is ours.
+
+Verify on an explorer:
+
+- [pool JEK34hu…](https://solscan.io/account/JEK34huFirCquM1UryNcE8DBdBEX1BGa9LtdZu1NhT5s) (trading)
+- [pool JEKDS3m…](https://solscan.io/account/JEKDS3mbrwcrqHzUtKmeC7G4b3sx6khdkfZUvxhdgMFx) (migrated)
+- [DBC program](https://solscan.io/account/dbcij3LWUppWqq96dh6gJWwBifmcGfLSB5D4DuSMaqN)
+
+The full `--json` output of both reports, with pool, config, creator and the fetch time, is pinned in `docs/mainnet-report-2026-09-20.json`. `test/mainnet-report.test.ts` checks that the pinned figures still come out of `buildReport`'s formatter and that the phases and addresses are consistent.
+
+What is still fork-only: the ACMEx *launch* (`createConfig`, `createPoolWithFirstBuy`). Launching on mainnet creates a real token with no equity behind it, so the demo issuer runs on surfnet and the mainnet launch path stays behind `--i-mean-mainnet`.
 
 ## Where it would break
 
