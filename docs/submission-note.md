@@ -17,6 +17,7 @@ An issuer toolkit that writes a tokenized-stock launch in IPO terms onto Meteora
 
 - 21 offline tests. The SDK's `validateConfigParameters` accepts every config the builder produces.
 - Real launch on a mainnet fork running the real program: `createConfig`, `createPoolWithFirstBuy`, three swaps. Simulator and live reader agree to the cent.
+- Working on Solana mainnet-beta today: the same reader priced two live pools of the real DBC program (`JEK34hu…` trading, `JEKDS3m…` migrated), read-only, from a fresh clone. Output pinned in `docs/mainnet-report-2026-09-20.json` and quoted in the README under "Working on mainnet today".
 - No web3.js v1 leaks into AllowanceKit. This repo owns the DBC dependency.
 
 ## Life after the hackathon
@@ -30,4 +31,6 @@ An issuer toolkit that writes a tokenized-stock launch in IPO terms onto Meteora
 - Repo: https://github.com/fskroes/wallie-dbc
 - Live page: https://www.onewallie.com/dbc.html (GitHub Pages mirror: https://fskroes.github.io/wallie-dbc/)
 - Launch record: `launch.surfnet.json`
+- Mainnet proof: `docs/mainnet-report-2026-09-20.json`, explorer https://solscan.io/account/JEK34huFirCquM1UryNcE8DBdBEX1BGa9LtdZu1NhT5s
+- Video (90 s, DBC entry): https://github.com/fskroes/AllowanceKit/releases/download/v0.6.0/dbc.mp4
 - AllowanceKit v0.6.0: https://www.npmjs.com/package/allowance-kit
