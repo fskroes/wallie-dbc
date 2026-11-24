@@ -1,17 +1,3 @@
-/**
- * The Wallie launch watcher. A buyer agent with an allowance that pays for
- * downside reports over x402 `upto` and raises alerts when a launch turns
- * against the holder. It never trades. It spends a capped amount on
- * information and stops when the cap is reached.
- *
- * Alert rules (all from the report, all explainable in one line):
- *   exit-haircut   exit value fell below `minExitOfMark` of mark
- *   stalled        progress did not move between polls for `stalledPolls` polls
- *   fee-spike      sell fee now is above `maxSellFeeBps`
- *   lock-heavy     locked supply above `maxLockedShare` of post-graduation supply
- *   complete       the curve completed: swaps closed until migration
- *   migrated       the pool migrated: sell on DAMM v2 now
- */
 import { payingFetch, type PaidResult, type PayContext } from "allowance-kit";
 import type { DownsideReport } from "./report.ts";
 import type { LiveReport } from "./reader.ts";
@@ -53,11 +39,8 @@ export interface WatchOptions {
   referenceBuyQuote?: number;
   polls: number;
   rules?: Partial<WatchRules>;
-  /** Called after each poll. Return false to stop early. */
   onPoll?: (p: Poll) => void | boolean;
-  /** Called between polls, after `onPoll`, with the poll number just finished. Awaited. */
   between?: (n: number) => void | Promise<void>;
-  /** Sleep between polls, ms. Default 0 for tests. */
   intervalMs?: number;
 }
 

@@ -1,8 +1,3 @@
-/**
- * Live chain reader. Fetches a DBC pool, its config, the current point and a
- * holder's balance, then hands them to the pure report. Works against any
- * network the program is deployed on: mainnet, devnet, or a surfnet fork.
- */
 import { Connection, PublicKey } from "@solana/web3.js";
 import { getAssociatedTokenAddressSync } from "@solana/spl-token";
 import BN from "bn.js";
@@ -42,19 +37,12 @@ export async function fetchPool(c: DynamicBondingCurveClient, address: PublicKey
   return { address: addr, pool, config, currentPoint };
 }
 
-/**
- * The holder's base-token balance in base units. Reads the associated token
- * account first (one RPC, works on every RPC including forks that do not
- * index by owner); falls back to an owner scan for wallets that hold the
- * mint in a non-associated account. 0 when none.
- */
 export async function holderBalance(connection: Connection, owner: PublicKey, mint: PublicKey, tokenProgram?: PublicKey): Promise<BN> {
   const ata = getAssociatedTokenAddressSync(mint, owner, true, tokenProgram);
   try {
     const bal = await connection.getTokenAccountBalance(ata, "confirmed");
     return new BN(bal.value.amount);
   } catch {
-    // no ATA, or RPC could not read it
   }
   try {
     const res = await connection.getTokenAccountsByOwner(owner, { mint }, "confirmed");
@@ -72,9 +60,7 @@ export async function holderBalance(connection: Connection, owner: PublicKey, mi
 export interface LiveReportOptions {
   rpcUrl: string;
   pool: string;
-  /** Wallet whose position to report. Omit for a market-only report. */
   holder?: string;
-  /** Reference buy size in whole quote units. Default 100. */
   referenceBuyQuote?: number;
 }
 
@@ -113,7 +99,6 @@ export async function liveReport(o: LiveReportOptions): Promise<LiveReport> {
   };
 }
 
-/** Every pool launched from one config, with a market-only report each. Issuer view. */
 export async function scanConfig(rpcUrl: string, configAddress: string, referenceBuyQuote = 100): Promise<LiveReport[]> {
   const c = client(rpcUrl);
   const cfgKey = new PublicKey(configAddress);
@@ -136,7 +121,6 @@ export async function scanConfig(rpcUrl: string, configAddress: string, referenc
   }));
 }
 
-/** Recent pool addresses on a network, newest last. For picking a sample to report on. */
 export async function samplePools(rpcUrl: string, count = 10): Promise<string[]> {
   const conn = new Connection(rpcUrl, "confirmed");
   const c = DynamicBondingCurveClient.create(conn, "confirmed");

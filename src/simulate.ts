@@ -1,9 +1,3 @@
-/**
- * Offline launch simulator. Takes the config an issuer built and replays a
- * sequence of buys and sells through the SDK's swap math, producing the
- * downside report after each step. No chain, no keys. This is how the demo
- * page shows "what does the buyer at step N get back" before anyone launches.
- */
 import BN from "bn.js";
 import { Decimal } from "decimal.js";
 import { PublicKey } from "@solana/web3.js";
@@ -21,11 +15,6 @@ import { buildReport, type DownsideReport } from "./report.ts";
 
 export const DEFAULT_QUOTE_MINT = new PublicKey("EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v");
 
-/**
- * Turn builder output into the account shape the quote functions read. The
- * fields the swap math touches are copied from the parameters; the rest are
- * placeholders. Kept in one place so a field rename in the SDK breaks here.
- */
 export function configFromParameters(p: ConfigParameters, quoteMint: PublicKey = DEFAULT_QUOTE_MINT): PoolConfig {
   const zero = new BN(0);
   const curve = [...p.curve];
@@ -33,9 +22,7 @@ export function configFromParameters(p: ConfigParameters, quoteMint: PublicKey =
   const migrationSqrtPrice = p.curve[p.curve.length - 1].sqrtPrice;
   const lv = p.lockedVesting;
   const lockedTotal = lv.cliffUnlockAmount.add(lv.amountPerPeriod.mul(lv.numberOfPeriod));
-  // Base sold along the curve = tokens between sqrtStartPrice and migrationSqrtPrice.
   const swapBaseAmount = getBaseTokenForSwap(p.sqrtStartPrice, migrationSqrtPrice, p.curve);
-  // Base that seeds the graduation pool, the same way the program derives it.
   const migrationQuoteAmount = getMigrationQuoteAmountFromMigrationQuoteThreshold(
     new Decimal(p.migrationQuoteThreshold.toString()),
     p.migrationFee.feePercentage,
@@ -121,7 +108,6 @@ function emptyLiquidityVesting() {
   };
 }
 
-/** A fresh virtual pool at the curve start, activated at `activationPoint`. */
 export function freshPool(config: PoolConfig, activationPoint: BN): VirtualPool {
   const zero = new BN(0);
   return {
@@ -138,7 +124,6 @@ export function freshPool(config: PoolConfig, activationPoint: BN): VirtualPool 
       baseMint: PublicKey.default,
       baseVault: PublicKey.default,
       quoteVault: PublicKey.default,
-      // The pool vault holds the whole pre-migration supply at launch.
       baseReserve: config.preMigrationTokenSupply,
       quoteReserve: zero,
       protocolBaseFee: zero,
@@ -168,32 +153,19 @@ export function freshPool(config: PoolConfig, activationPoint: BN): VirtualPool 
 }
 
 export interface SimStep {
-  /** "buy" spends quote; "sell" spends base. */
   side: "buy" | "sell";
-  /** Amount in whole units of the spent token. */
   amount: number;
-  /** Point (slot or unix time) at which the trade happens. */
   at: number;
-  /** Who trades. The report is built for `watch` after every step. */
   who: string;
 }
 
 export interface SimResult {
   step: SimStep;
-  /** The trader's base balance after the step, whole tokens. */
   balances: Record<string, number>;
   report: DownsideReport;
-  /** True when the step was rejected by the curve (e.g. complete). */
   rejected?: string;
 }
 
-/**
- * Apply a trade to the pool the way the program does: reserves move by the
- * net amounts, sqrtPrice steps to nextSqrtPrice. Fees in quote leave the
- * reserve (they are claimable, not liquidity). Buys use partial fill, the
- * program's behaviour for the last buy that tops the curve: only what the
- * curve can absorb is taken, the rest stays with the buyer.
- */
 export function applyTrade(pool: VirtualPool, config: PoolConfig, side: "buy" | "sell", amountIn: BN, at: BN) {
   const q =
     side === "buy"

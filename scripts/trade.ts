@@ -1,10 +1,3 @@
-/**
- * Trade against a launched pool. Used by the demo to move the market between
- * agent polls, and by hand to test a live launch.
- *
- *   node scripts/trade.ts buy  <usd>    [--launch launch.surfnet.json] [--key .keys/creator.json]
- *   node scripts/trade.ts sell <tokens> [--launch launch.surfnet.json] [--key .keys/creator.json]
- */
 import { readFileSync } from "node:fs";
 import { Connection, Keypair, PublicKey, sendAndConfirmTransaction } from "@solana/web3.js";
 import BN from "bn.js";
@@ -50,7 +43,6 @@ export async function trade(
   return sendAndConfirmTransaction(conn, tx, [signer], { commitment: "confirmed" });
 }
 
-/** Give a wallet SOL and USDC on a surfnet fork. No-op elsewhere. */
 export async function fundOnSurfnet(rpcUrl: string, who: PublicKey, sol: number, usdcMint: string, usdc: number): Promise<void> {
   const call = async (method: string, params: unknown[]) => {
     const r = await fetch(rpcUrl, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, method, params }) });

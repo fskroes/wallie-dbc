@@ -22,7 +22,6 @@ test("fresh pool: nothing raised, full shortfall, no position", () => {
   assert.equal(r.lockedTokens, 300_000);
   assert.equal(r.soldTokens, 0);
   assert.ok(Math.abs(r.floatTokens - 200_000) < 1);
-  // 10k buys at 300bps: net 9,700 each → 2.4M / 9.7k = 248 buys
   assert.equal(r.buysToGraduate, Math.ceil(2_400_000 / 9_700));
 });
 
@@ -66,12 +65,10 @@ test("reserves and price move together; the raise is what the curve keeps after 
   const c = cfg();
   const pool = freshPool(c, new BN(T0));
   const q = applyTrade(pool, c, "buy", toUnits(100_000, 6), new BN(T0 + 100_000));
-  // fee rests at 25 bps after the window, fees are on input
   assert.equal(q.excludedFeeInputAmount.toString(), pool.poolState.quoteReserve.toString());
   assert.ok(pool.poolState.quoteReserve.lt(toUnits(100_000, 6)));
   assert.ok(pool.poolState.quoteReserve.gt(toUnits(99_000, 6)));
   assert.ok(pool.poolState.sqrtPrice.gt(c.sqrtStartPrice));
-  // sold-so-far equals what the buyer received
   const ahead = baseAhead(pool.poolState.sqrtPrice, c);
   const sold = c.swapBaseAmount.sub(ahead);
   assert.ok(sold.sub(q.outputAmount).abs().lten(2), `sold ${sold} vs out ${q.outputAmount}`);
@@ -104,12 +101,10 @@ test("the curve completes when the raise is met and further buys are rejected", 
     ],
     { activationPoint: T0, watch: "whale", referenceBuyQuote: 1000 },
   );
-  // One buy bigger than the curve holds is partially filled: the curve takes what it needs.
   assert.equal(res[0].rejected, undefined);
   assert.equal(res[0].report.phase, "complete");
   assert.ok(Math.abs(res[0].report.raisedQuote - sum.raiseTargetUsd) < 1, String(res[0].report.raisedQuote));
   assert.match(res[1].rejected ?? "", /completed/);
-  // The same in slices. 12 × 200k gross is 2.394M net after the 25 bps fee, so 13 are needed.
   const slices = Array.from({ length: 13 }, (_, i) => ({ side: "buy" as const, amount: 200_000, at: T0 + 200_000 + i, who: "w" }));
   const res2 = simulate(c, [...slices, { side: "buy", amount: 10, at: T0 + 300_000, who: "late" }], { activationPoint: T0, watch: "w", referenceBuyQuote: 1000 });
   const last = res2[res2.length - 1];
@@ -120,7 +115,6 @@ test("the curve completes when the raise is met and further buys are rejected", 
   assert.equal(last.report.shortfallQuote, 0);
   assert.equal(last.report.buysToGraduate, 0);
   assert.equal(last.report.exitNote, "curve complete; swaps are closed until migration");
-  // the buyer at completion sold the whole curve supply
   assert.ok(Math.abs(res2[done].report.soldTokens - summarizeSpec(DEFAULT_SPEC).curveSupply) < 5, String(res2[done].report.soldTokens));
 });
 
