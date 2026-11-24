@@ -1,20 +1,3 @@
-/**
- * Launch an equity spec on Meteora DBC. Two signed transactions:
- *
- *   1. partner  createConfig            the issuer's launch terms become a config account
- *   2. creator  createPoolWithFirstBuy  the base mint + virtual pool, plus an opening buy
- *
- * Networks:
- *   surfnet        mainnet fork at 402.surfnet.dev, airdrops and USDC minting allowed (default)
- *   solana-devnet  needs pre-funded keys in .keys/ (devnet airdrops are rate limited)
- *   solana         mainnet; the human gate. Refuses without --i-mean-mainnet.
- *
- * Usage:
- *   node scripts/launch.ts [spec.json] [--network surfnet] [--first-buy 5000] [--out launch.json]
- *
- * Keys live in .keys/{partner,creator}.json (solana-keygen format). Created if missing.
- * Output: launch.json with every address, so `report`/`scan` and the web page can find the pool.
- */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { Connection, Keypair, PublicKey, sendAndConfirmTransaction } from "@solana/web3.js";
 import BN from "bn.js";
@@ -87,7 +70,6 @@ async function main(): Promise<void> {
   await fund(conn, partner.publicKey, 1, usdcMint, 0);
   await fund(conn, creator.publicKey, 1, usdcMint, firstBuyUsd);
 
-  // 1. config
   const params = buildEquityConfig(spec);
   const config = Keypair.generate();
   const tx1 = await client.partner.createConfig({
@@ -101,7 +83,6 @@ async function main(): Promise<void> {
   const sig1 = await sendAndConfirmTransaction(conn, tx1, [partner, config], { commitment: "confirmed" });
   console.log(`config   ${config.publicKey.toBase58()}  ${sig1}`);
 
-  // 2. pool + first buy
   const baseMint = Keypair.generate();
   const pool = deriveDbcPoolAddress(new PublicKey(usdcMint), baseMint.publicKey, config.publicKey);
   const tx2 = await client.creator.createPoolWithFirstBuy({

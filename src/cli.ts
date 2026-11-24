@@ -1,13 +1,4 @@
 #!/usr/bin/env node
-/**
- * wallie-dbc CLI
- *
- *   report <pool> [--holder <wallet>] [--network solana|solana-devnet|surfnet] [--rpc <url>] [--ref <usd>] [--json]
- *   scan   <config> [--network ...] [--json]
- *   spec   [spec.json]                      print the DBC config an equity spec produces
- *   simulate [spec.json] [--steps steps.json] [--json]   replay trades offline, report after each
- *   sample [--network ...] [--count 10]     list recent pool addresses
- */
 import { readFileSync } from "node:fs";
 import { DEFAULT_SPEC, buildEquityConfig, summarizeSpec, type EquityLaunchSpec } from "../config/equity-curve.ts";
 import { RPC, liveReport, samplePools, scanConfig } from "./reader.ts";

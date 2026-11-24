@@ -1,20 +1,3 @@
-/**
- * Equity launch spec → Meteora DBC config parameters.
- *
- * This is the one place an issuer describes a tokenized-stock launch in
- * stock terms (opening price, listing price, float, lockup) and gets back the
- * exact `ConfigParameters` the DBC program accepts. Pure: no network, no keys.
- *
- * IPO term            → DBC field
- * opening price       → initialMarketCap  (price × total supply)
- * listing price       → migrationMarketCap
- * float               → percentageSupplyOnMigration
- * book (raise target) → migrationQuoteThreshold (derived by the SDK)
- * flipping penalty    → base fee scheduler, decays over `flipWindowHours`
- * insider lockup      → lockedVesting (cliff after graduation)
- * listing venue       → migration to DAMM v2
- * settlement asset    → quoteMint = USDC
- */
 import {
   ActivationType,
   BaseFeeMode,
@@ -35,31 +18,18 @@ export const USDC_MINT = {
 } as const;
 
 export interface EquityLaunchSpec {
-  /** Ticker, e.g. "ACMEx". Display only. */
   symbol: string;
-  /** Long name, e.g. "Acme Robotics tokenized common". Display only. */
   name: string;
-  /** Total token supply in whole tokens (shares). */
   totalShares: number;
-  /** Price per share at the first trade, in USDC. Usually the Pyth reference. */
   openingPriceUsd: number;
-  /** Price per share at graduation, in USDC. Must be above opening. */
   listingPriceUsd: number;
-  /** Percent of supply that moves into the DAMM v2 pool at graduation (1..80). */
   floatPercent: number;
-  /** Percent of supply locked for insiders, released after graduation. */
   insiderLockPercent: number;
-  /** Days after graduation before the first insider unlock. */
   insiderCliffDays: number;
-  /** Months of linear insider vesting after the cliff. 0 = unlock at cliff. */
   insiderVestMonths: number;
-  /** Fee charged to trades in the first minutes after open, in bps. */
   openingFeeBps: number;
-  /** Fee after the flip window has passed, in bps (25 minimum). */
   restingFeeBps: number;
-  /** Hours over which the opening fee decays to the resting fee. */
   flipWindowHours: number;
-  /** Share of trading fees the creator keeps, percent (0..100). */
   creatorFeeSharePercent: number;
 }
 
@@ -67,7 +37,6 @@ export const SECONDS_PER_HOUR = 3600;
 export const SECONDS_PER_DAY = 86_400;
 export const SECONDS_PER_MONTH = 30 * SECONDS_PER_DAY;
 
-/** A sane starting point: small-cap style, one-day flip window, one-year insider lock. */
 export const DEFAULT_SPEC: EquityLaunchSpec = {
   symbol: "ACMEx",
   name: "Acme Robotics tokenized common",
@@ -87,21 +56,14 @@ export const DEFAULT_SPEC: EquityLaunchSpec = {
 export interface SpecSummary {
   initialMarketCapUsd: number;
   migrationMarketCapUsd: number;
-  /** USDC the curve must collect before graduation (= float × listing price). */
   raiseTargetUsd: number;
-  /** Tokens sold along the curve to collect the raise. */
   curveSupply: number;
-  /** Tokens that seed the DAMM v2 pool at graduation. */
   floatSupply: number;
-  /** Tokens locked for insiders. */
   lockedSupply: number;
-  /** Authorized but unissued: supply − float − locked − curve. Returned to the issuer. */
   treasurySupply: number;
-  /** Average price a curve buyer pays, geometric mean of opening and listing. */
   averageCurvePriceUsd: number;
 }
 
-/** Validate the spec. Throws a plain Error with the failing field named. */
 export function validateSpec(s: EquityLaunchSpec): void {
   const fail = (field: keyof EquityLaunchSpec, why: string) => {
     throw new Error(`spec.${field}: ${why}`);
@@ -120,14 +82,6 @@ export function validateSpec(s: EquityLaunchSpec): void {
   if (!(s.creatorFeeSharePercent >= 0 && s.creatorFeeSharePercent <= 100)) fail("creatorFeeSharePercent", "must be 0..100");
 }
 
-/**
- * The book-building identity DBC enforces: USDC collected on the curve becomes
- * the graduation pool's quote side, paired with the float at the listing price.
- * So raise = float × listing, and the curve must sell exactly enough tokens
- * between opening and listing price to collect that raise. We price the curve
- * at the geometric mean, which is where the SDK's two-segment solver lands, and
- * hand any shares not needed back to the issuer as treasury (DBC "leftover").
- */
 export function summarizeSpec(s: EquityLaunchSpec): SpecSummary {
   validateSpec(s);
   const floatSupply = Math.floor((s.totalShares * s.floatPercent) / 100);
@@ -154,7 +108,6 @@ export function summarizeSpec(s: EquityLaunchSpec): SpecSummary {
   };
 }
 
-/** The SDK builder input. Exposed so tests can assert the mapping line by line. */
 export function toBuilderParams(s: EquityLaunchSpec): BuildCurveWithTwoSegmentsParams {
   validateSpec(s);
   const sum = summarizeSpec(s);
@@ -211,7 +164,6 @@ export function toBuilderParams(s: EquityLaunchSpec): BuildCurveWithTwoSegmentsP
   };
 }
 
-/** Build the on-chain config parameters for an equity launch. Pure. */
 export function buildEquityConfig(s: EquityLaunchSpec): ConfigParameters {
   return buildCurveWithTwoSegments(toBuilderParams(s));
 }

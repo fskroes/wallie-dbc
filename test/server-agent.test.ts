@@ -13,7 +13,6 @@ import { startReportServer } from "../src/server.ts";
 import { evaluate, watchLaunch, DEFAULT_RULES, fmtUsd } from "../src/agent.ts";
 import type { LiveReport } from "../src/reader.ts";
 
-/** A throwaway 64-byte Solana secret, JSON-array form. Never funded: the open is offline. */
 function solanaKeyJson(): string {
   const { privateKey } = crypto.generateKeyPairSync("ed25519");
   const pkcs8 = privateKey.export({ format: "der", type: "pkcs8" }) as Buffer;
@@ -25,7 +24,6 @@ function solanaKeyJson(): string {
 
 const T0 = 1_800_000_000;
 
-/** An offline "chain": one simulated pool that advances one trade per report call. */
 function offlineChain(trades: Array<{ side: "buy" | "sell"; amount: number }>) {
   const config = configFromParameters(buildEquityConfig(DEFAULT_SPEC));
   const pool = freshPool(config, new BN(T0));
@@ -105,8 +103,6 @@ test("a failed report charges nothing", async () => {
 test("the allowance caps the spend: the agent stops when the ceiling no longer fits", async () => {
   const chain = offlineChain([]);
   const server = await startReportServer({ reportFn: chain.reportFn });
-  // Each request escrows the $0.10 ceiling, settles $0.01 and releases the rest.
-  // $0.115 → poll 1 fits (0.115), poll 2 fits (0.105), poll 3 does not (0.095 < 0.10).
   const rt = await buyer(0.115);
   try {
     const res = await watchLaunch({ ctx: rt.ctx, serverUrl: server.url, pool: "P", polls: 10 });
@@ -121,14 +117,12 @@ test("the allowance caps the spend: the agent stops when the ceiling no longer f
 });
 
 test("alerts: stalled raise, lock-heavy, fee spike, exit haircut, completion", async () => {
-  // Three polls with no trades: progress stays flat → stalled on the third.
   const chain = offlineChain([{ side: "buy", amount: 1000 }]);
   const server = await startReportServer({ reportFn: chain.reportFn });
   const rt = await buyer(1);
   try {
     const res = await watchLaunch({ ctx: rt.ctx, serverUrl: server.url, pool: "P", holder: "H", polls: 4, rules: { stalledPolls: 2 } });
     const rules = res.polls.map((p) => p.alerts.map((a) => a.rule));
-    // opening fee 300 bps > 200 → fee-spike on early polls; 30% locked vs tiny sold → lock-heavy
     assert.ok(rules[0].includes("fee-spike"), JSON.stringify(rules));
     assert.ok(rules[0].includes("lock-heavy"));
     assert.ok(!rules[1].includes("stalled"));
@@ -138,7 +132,6 @@ test("alerts: stalled raise, lock-heavy, fee spike, exit haircut, completion", a
     await server.close();
   }
 
-  // Pure evaluate checks
   const base = (await chain.reportFn({ pool: "P", holder: "H" })).report;
   const haircut = { ...base, holderTokens: 100, exitHaircut: 0.5, exitNote: undefined };
   assert.ok(evaluate(haircut, undefined, 0, DEFAULT_RULES).some((a) => a.rule === "exit-haircut"));

@@ -1,18 +1,3 @@
-/**
- * The paid report server: an x402 `upto` seller that meters downside reports.
- *
- * An agent opens one channel per request with a ceiling, the server charges
- * per report actually produced, and the rest is refunded. That is the same
- * promise the report is about: know the most you can lose before you commit.
- *
- *   GET /report?pool=<addr>&holder=<wallet>&ref=<usd>   one report, priced per report
- *   GET /scan?config=<addr>                              one report per pool on the config
- *   GET /health                                          free
- *
- * `reportFn` and `scanFn` are injectable so the loop can run offline in tests
- * and demos with no RPC. `operator` is the upto operator: in-memory for the
- * demo, `createSolanaUptoOperator` for real settlement.
- */
 import http from "node:http";
 import { Keypair } from "@solana/web3.js";
 import {
@@ -29,9 +14,7 @@ import { RPC, liveReport, scanConfig, type LiveReport } from "./reader.ts";
 export interface ReportServerOptions {
   network?: string;
   rpcUrl?: string;
-  /** Micro-USD charged per report produced. Default 10_000 = $0.01. */
   perReportMicro?: bigint;
-  /** Ceiling a buyer must deposit per request. Default 100_000 = $0.10. */
   ceilingMicro?: bigint;
   payTo?: string;
   operator?: UptoOperator;
@@ -47,15 +30,10 @@ export interface ReportServer {
   perReportMicro: bigint;
   ceilingMicro: bigint;
   operator: UptoOperator;
-  /** Reports served so far, for tests and the demo readout. */
   served: number;
   close(): Promise<void>;
 }
 
-/**
- * An in-memory upto operator whose offer pins a blockhash and slot, so the
- * buyer builds its channel-open with zero RPC. Used by tests and the offline demo.
- */
 export function pinnedOperator(): { operator: UptoOperator; base: InMemoryUptoOperator } {
   const base = new InMemoryUptoOperator({ feePayer: randomAddr(), receiverAuthorizer: randomAddr() });
   const blockhash = randomAddr();
@@ -126,7 +104,6 @@ export async function startReportServer(o: ReportServerOptions = {}): Promise<Re
         }
         return json(404, { error: "not found" });
       } catch (e) {
-        // Nothing produced, nothing charged: the channel settles at zero and refunds in full.
         return json(502, { error: (e as Error).message });
       }
     },

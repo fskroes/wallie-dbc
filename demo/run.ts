@@ -1,19 +1,3 @@
-/**
- * The demo, end to end, against the live surfnet launch:
- *
- *   1. start the paid report server (x402 upto, in-memory settlement, real chain reads)
- *   2. a Wallie agent with a $0.50 allowance polls the launch
- *   3. between polls, a second wallet buys on the real pool, so the figures move
- *   4. the agent prints the four downside figures and any alerts after every poll,
- *      and the money trail: escrowed, charged, refunded, allowance left
- *
- * Everything on chain is real (surfnet is a mainnet fork running the real DBC
- * program). Only the payment settlement is in-memory, exactly as the Wallie
- * MCP demo does it. Swap `pinnedOperator()` for `createSolanaUptoOperator`
- * and the same code settles USDC on devnet or mainnet.
- *
- *   node demo/run.ts [--launch launch.surfnet.json] [--polls 4] [--no-trades] [--out web/data.json]
- */
 import crypto from "node:crypto";
 import fs from "node:fs";
 import os from "node:os";

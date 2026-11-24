@@ -151,7 +151,6 @@ sell fee now       400 bps  (rests at 400 bps)</pre></div>
   const pct = (n) => (n * 100).toFixed(1) + "%";
   const micro = (s) => "$" + (Number(s) / 1e6).toFixed(2);
 
-  // theme
   const root = document.documentElement;
   try { const t = localStorage.getItem("theme"); if (t) root.dataset.theme = t; } catch {}
   $("#theme").onclick = () => { const next = (root.dataset.theme || (matchMedia("(prefers-color-scheme:dark)").matches ? "dark" : "light")) === "dark" ? "light" : "dark"; root.dataset.theme = next; try { localStorage.setItem("theme", next); } catch {} };
@@ -177,7 +176,6 @@ sell fee now       400 bps  (rests at 400 bps)</pre></div>
   }
   range.oninput = () => show(+range.value);
 
-  // chart
   const svg = $("#chart"); const W = 1000, H = 220, P = 8;
   const maxExit = Math.max(...F.map((f) => f.exitValueNowQuote), sim.you.paidUsd) * 1.08;
   const maxH = F[F.length - 1].hours;
@@ -199,7 +197,6 @@ sell fee now       400 bps  (rests at 400 bps)</pre></div>
   }
   svg.addEventListener("pointermove", (e) => { const r = svg.getBoundingClientRect(); const h = ((e.clientX - r.left) / r.width) * maxH; let best = 0; for (let i = 0; i < F.length; i++) if (Math.abs(F[i].hours - h) < Math.abs(F[best].hours - h)) best = i; range.value = best; show(best); });
 
-  // terms table
   const s = sim.spec, sum = sim.summary;
   const rows = [
     ["opening price", `${s.openingPriceUsd} USDC`, "initialMarketCap → sqrtStartPrice"],
@@ -217,7 +214,6 @@ sell fee now       400 bps  (rests at 400 bps)</pre></div>
 
   show(0);
 
-  // live demo timeline
   try {
     const live = await fetch("data.json").then((r) => r.json());
     const L = live.launch;

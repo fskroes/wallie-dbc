@@ -4,13 +4,6 @@ import fs from "node:fs";
 import { renderReport, type DownsideReport } from "../src/report.ts";
 import type { LiveReport } from "../src/reader.ts";
 
-/**
- * docs/mainnet-report-2026-09-20.json is the pinned output of
- *   node dist/src/cli.js report <pool> --network solana --json
- * against two real mainnet-beta pools. This test keeps that record honest:
- * the addresses are real base58, the phases match the numbers, and the
- * formatter still prints the figures the README quotes. Offline.
- */
 const record = JSON.parse(fs.readFileSync(new URL("../docs/mainnet-report-2026-09-20.json", import.meta.url), "utf8")) as {
   network: string; cluster: string; program: string; commit: string; capturedAt: string; pools: LiveReport[];
 };

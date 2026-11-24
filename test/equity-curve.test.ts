@@ -19,7 +19,6 @@ import {
 } from "@meteora-ag/dynamic-bonding-curve-sdk";
 
 const spec = (o: Partial<EquityLaunchSpec> = {}): EquityLaunchSpec => ({ ...DEFAULT_SPEC, ...o });
-/** The SDK validator also checks the leftover receiver, which is an account, not a curve parameter. */
 const sdkAccepts = (s: EquityLaunchSpec) => validateConfigParameters({ ...buildEquityConfig(s), leftoverReceiver: PublicKey.unique() });
 
 test("default spec validates and the SDK accepts the config", () => {
@@ -38,26 +37,20 @@ test("summary follows the book-building identity: raise = float × listing", () 
 
 test("config encodes the IPO terms in DBC fields", () => {
   const c = buildEquityConfig(DEFAULT_SPEC);
-  // threshold = raise in USDC micro
   assert.equal(c.migrationQuoteThreshold.toString(), "2400000000000");
-  // start price = opening price
   const start = getPriceFromSqrtPrice(c.sqrtStartPrice, 6, 6).toNumber();
   assert.ok(Math.abs(start - 8) < 0.001, `start ${start}`);
-  // last curve point = listing price
   const last = c.curve[c.curve.length - 1].sqrtPrice;
   const listing = getPriceFromSqrtPrice(last, 6, 6).toNumber();
   assert.ok(Math.abs(listing - 12) < 0.001, `listing ${listing}`);
-  // flip window → linear scheduler from 300 to 25 bps over 24h in 60 periods
   assert.equal(c.poolFees.baseFee.baseFeeMode, BaseFeeMode.FeeSchedulerLinear);
   assert.equal(c.poolFees.baseFee.cliffFeeNumerator.toString(), "30000000");
   assert.equal(c.poolFees.baseFee.firstFactor, 60);
   assert.equal(c.poolFees.baseFee.secondFactor.toString(), String(Math.round((24 * 3600) / 60)));
-  // insider lockup → vesting: 12 monthly periods, 180-day cliff, no cliff unlock
   assert.equal(c.lockedVesting.numberOfPeriod.toString(), "12");
   assert.equal(c.lockedVesting.cliffDurationFromMigrationTime.toString(), String(180 * 86_400));
   assert.equal(c.lockedVesting.cliffUnlockAmount.toString(), "0");
   assert.equal(c.lockedVesting.amountPerPeriod.mul(c.lockedVesting.numberOfPeriod).toString(), "300000000000");
-  // listing venue and settlement
   assert.equal(c.migrationOption, MigrationOption.MET_DAMM_V2);
   assert.equal(c.activationType, ActivationType.Timestamp);
   assert.equal(c.tokenUpdateAuthority, TokenAuthorityOption.Immutable);
